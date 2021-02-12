@@ -10,7 +10,7 @@
 // ------------------------------------------------------------------------------
 #region Designer generated code
 #pragma warning disable
-namespace Tests
+namespace Tests.Lottery_ClassLib_Tests
 {
     using TechTalk.SpecFlow;
     using System;
@@ -35,7 +35,7 @@ namespace Tests
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "", "LotteryComputeStats", "    Prove 1) ability to \'tally\' the winning tickets\r\n\tProve 2) ability to \'tally\'" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Lottery.ClassLib.Tests", "LotteryComputeStats", "    Prove 1) ability to \'tally\' the winning tickets\r\n\tProve 2) ability to \'tally\'" +
                     " the loosing tickets\r\n\tProve 3) ability to extract winning tickets for a given p" +
                     "layer\r\n\tProve 4) ability to extract loosing tickets for a given player", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
