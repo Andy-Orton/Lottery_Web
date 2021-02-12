@@ -18,8 +18,8 @@ namespace Lottery.Actors
         {
             switch (message)
             {
-                case SupervisorUserGeneratorMessage sup:
-                    Log.Info(sup.tickets.ToString());
+                case BeginPeriodMessage sup:
+                    Log.Info(sup.NumberOfTickets.ToString());
                     break;
                 default:
                     Log.Info("Got Message that I didn't know how to do anything with");
@@ -28,6 +28,7 @@ namespace Lottery.Actors
             
         }
 
+       
         public static Props Props() => Akka.Actor.Props.Create<LotterySupervisor>();
     }
 }

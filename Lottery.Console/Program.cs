@@ -13,13 +13,14 @@ namespace Lottery.ConsoleRunner
         static void Main(string[] args)
         {
             LotteryActorSystem = ActorSystem.Create("LotteryActorSystem");
-            Init();
             Props lotterySupervisorProps = Props.Create<LotterySupervisor>();
-            Props periodProps = Props.Create<Period>();
             IActorRef lotterySupervisor = LotteryActorSystem.ActorOf(lotterySupervisorProps, "LotterySupervisor");
+
+            Props periodProps = Props.Create<Period>();
             IActorRef period = LotteryActorSystem.ActorOf(periodProps, "Period");
-            lotterySupervisor.Tell(new SupervisorUserGeneratorMessage() {tickets=300, users=200});
-            period.Tell(new SupervisorPeriodMessage() { vendors = 20 });
+
+            lotterySupervisor.Tell(new BeginPeriodMessage() {NumberOfTickets=300, NumberOfUsers=200, NumberOfVendors=20});
+            period.Tell(new SupervisorPeriodMessage() { NumberOfVendors = 20 });
             LotteryActorSystem.Terminate();
         }
 

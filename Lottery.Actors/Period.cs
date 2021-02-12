@@ -19,8 +19,8 @@ namespace Lottery.Actors
             switch (message)
             {
                 case SupervisorPeriodMessage supPM:
-                    vendors = supPM.vendors;
-                    Log.Info(supPM.vendors.ToString());
+                    vendors = supPM.NumberOfVendors;
+                    Log.Info(supPM.NumberOfVendors.ToString());
                     break;
             }
         }

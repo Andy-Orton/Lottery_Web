@@ -9,27 +9,27 @@ namespace Tests.Lottery.Actor.Tests
 {
     public class ActorTests : TestKit
     {
+
+        public ActorTests() : base()
+        {
+
+        }
         private static ActorSystem LotteryActorSystem;
 
-        [SetUp]
-        private void SetUp()
-        {
-            LotteryActorSystem = ActorSystem.Create("Lottery");
+        //[SetUp]
+        //private void SetUp()
+        //{
+        //    LotteryActorSystem = ActorSystem.Create("Lottery");
             
-        }
+        //}
 
         [Test]
         public void SupervisorPeriodTest()
         {
-            var subject = Sys.ActorOf<LotterySupervisor>();
-
-            var prob = CreateTestProbe();
-
-            var msg = new SupervisorPeriodMessage { vendors = 300 };
-
-            subject.Tell(msg, prob);
-
-            ExpectMsg(msg, TimeSpan.FromSeconds(5));
+            var msg = new SupervisorPeriodMessage { NumberOfVendors = 300 };
+            var supervisorActor = ActorOfAsTestActorRef(() => new LotterySupervisor(), TestActor);
+            supervisorActor.Tell(msg);
+            Assert.IsNotNull(ExpectMsg(msg, TimeSpan.FromSeconds(5)));
         }
 
     }

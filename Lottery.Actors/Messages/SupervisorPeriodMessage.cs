@@ -8,6 +8,6 @@ namespace Lottery.Actors.Messages
 {
     public record SupervisorPeriodMessage
     {
-        public int vendors { get; init; }
+        public int NumberOfVendors { get; init; }
     }
 }
