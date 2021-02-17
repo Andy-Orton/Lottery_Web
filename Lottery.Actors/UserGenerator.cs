@@ -30,6 +30,7 @@ namespace Lottery.Actors
                         _users.Add(_user);
                         Log.Info($"User{i} has been created");
                     }
+                    Sender.Tell(_users.Count);
                     break;
             }
         }

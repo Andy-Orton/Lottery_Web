@@ -26,18 +26,14 @@ namespace Tests.Lottery.Actor.Tests
         [Test]
         public void SupervisorPeriodTest()
         {
-            LotteryActorSystem = ActorSystem.Create("Lottery");
-            var msg = new SupervisorPeriodMessage { NumberOfVendors = 300 };
-            IActorRef supervisorActor = LotteryActorSystem.ActorOf(Props.Create(() => new LotterySupervisor()), "Supervisor");
-            supervisorActor.Tell(msg);
-            Assert.IsNotNull(ExpectMsg(msg, TimeSpan.FromSeconds(5)));
+            var msg = new BeginPeriodMessage() { NumberOfTickets = 200, NumberOfUsers = 10, NumberOfVendors = 20 };
+            var ugMsg = new SupervisorUserGeneratorMessage() { NumberOfTickets = 200, NumberOfUsers = 10 };
+            var userGenerator = ActorOfAsTestActorRef(() => new UserGenerator(), TestActor);
 
-            var usMsg = new SupervisorUserGeneratorMessage() { NumberOfUsers = 20 };
+            userGenerator.Tell(ugMsg);
 
-            supervisorActor.Tell(new BeginPeriodMessage() { NumberOfTickets = 200, NumberOfUsers = 10, NumberOfVendors = 20 });
-
-            var UserGenerator = LotteryActorSystem.ActorSelection("/user/Supervisor/UserGenerator");
-
+            var result = ExpectMsg<int>(TimeSpan.FromSeconds(3)) == 10;
+            Assert.IsTrue(result);
         }
 
 
