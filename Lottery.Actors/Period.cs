@@ -11,7 +11,6 @@ namespace Lottery.Actors
 {
     public class Period : UntypedActor
     {
-        public int vendors { get; set; }
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
         protected override void OnReceive(object message)
@@ -19,8 +18,7 @@ namespace Lottery.Actors
             switch (message)
             {
                 case SupervisorPeriodMessage supPM:
-                    vendors = supPM.NumberOfVendors;
-                    Log.Info(supPM.NumberOfVendors.ToString());
+                    Log.Info($"Starting period with {supPM.NumberOfVendors} vendors.");
                     break;
             }
         }

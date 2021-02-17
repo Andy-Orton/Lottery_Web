@@ -19,7 +19,15 @@ namespace Lottery.Actors
             switch (message)
             {
                 case BeginPeriodMessage sup:
-                    Log.Info(sup.NumberOfTickets.ToString());
+
+                    Context.ActorOf(Props.Create(() => new Period()), "PeriodActor");
+                    Log.Info("Period Actor has been created");
+                    Context.ActorOf(Props.Create(() => new UserGenerator()), "UserGenerator");
+                    Log.Info("User Generator Actor has been created");
+
+
+                    Context.Child("PeriodActor").Tell(new SupervisorPeriodMessage() { NumberOfVendors = sup.NumberOfVendors });
+                    Context.Child("UserGenerator").Tell(new SupervisorUserGeneratorMessage() { NumberOfTickets = sup.NumberOfTickets, NumberOfUsers = sup.NumberOfUsers });
                     break;
                 default:
                     Log.Info("Got Message that I didn't know how to do anything with");
@@ -27,8 +35,6 @@ namespace Lottery.Actors
             }
             
         }
-
        
-        public static Props Props() => Akka.Actor.Props.Create<LotterySupervisor>();
     }
 }
