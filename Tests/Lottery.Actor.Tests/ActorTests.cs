@@ -14,7 +14,6 @@ namespace Tests.Lottery.Actor.Tests
         {
 
         }
-        private static ActorSystem LotteryActorSystem;
 
         //[SetUp]
         //private void SetUp()
@@ -23,16 +22,19 @@ namespace Tests.Lottery.Actor.Tests
             
         //}
 
-        [Test]
-        public void SupervisorPeriodTest()
+        [TestCase(100)]
+        [TestCase(50)]
+        [TestCase(30)]
+        [TestCase(20)]
+        [TestCase(10)]
+        public void SupervisorUserGeneratorTest(int users)
         {
-            var msg = new BeginPeriodMessage() { NumberOfTickets = 200, NumberOfUsers = 10, NumberOfVendors = 20 };
-            var ugMsg = new SupervisorUserGeneratorMessage() { NumberOfTickets = 200, NumberOfUsers = 10 };
+            var ugMsg = new SupervisorUserGeneratorMessage() { NumberOfTickets = 200, NumberOfUsers = users };
             var userGenerator = ActorOfAsTestActorRef(() => new UserGenerator(), TestActor);
 
             userGenerator.Tell(ugMsg);
 
-            var result = ExpectMsg<int>(TimeSpan.FromSeconds(3)) == 10;
+            var result = ExpectMsg<int>() == users;
             Assert.IsTrue(result);
         }
 
