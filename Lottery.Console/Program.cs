@@ -1,7 +1,7 @@
 ﻿using Akka.Actor;
 using Lottery.Actors;
 using Lottery.Actors.Messages;
-
+using System;
 
 namespace Lottery.ConsoleRunner
 {
@@ -18,7 +18,7 @@ namespace Lottery.ConsoleRunner
 
 
             lotterySupervisor.Tell(new BeginPeriodMessage() {NumberOfTickets=300, NumberOfUsers=200, NumberOfVendors=20});
-            LotteryActorSystem.Terminate();
+            Console.ReadLine();
         }
     }
 }

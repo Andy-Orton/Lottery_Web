@@ -34,7 +34,7 @@ namespace Tests.Lottery.Actor.Tests
 
             userGenerator.Tell(ugMsg);
 
-            var result = ExpectMsg<int>() == users;
+            var result = ExpectMsg<UserGenerationCompleteMessage>().CreatedChildren == users;
             Assert.IsTrue(result);
         }
 

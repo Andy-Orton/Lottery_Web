@@ -11,12 +11,14 @@ namespace Lottery.Actors
 {
     public class UserGenerator : UntypedActor
     {
+        public const int MinTicketsPerUser = 20;
+        public const int MaxTicketsPerUser = 1_000;
+
+        private Random random = new Random();
         public ILoggingAdapter Log { get; } = Context.GetLogger();
-        public List<IActorRef> _users { get; set; }
 
         public UserGenerator()
         {
-            _users = new List<IActorRef>();
         }
 
         protected override void OnReceive(object message)
@@ -26,11 +28,9 @@ namespace Lottery.Actors
                 case SupervisorUserGeneratorMessage msg:
                     for(int i = 0; i < msg.NumberOfUsers; i++)
                     {
-                        IActorRef _user = Context.ActorOf(Props.Create(() => new User()), "User" + i);
-                        _users.Add(_user);
-                        Log.Info($"User{i} has been created");
+                        Context.ActorOf(Props.Create(() => new UserActor(random.Next(MinTicketsPerUser, MaxTicketsPerUser))), "User" + i);
                     }
-                    Sender.Tell(_users.Count);
+                    Sender.Tell(new UserGenerationCompleteMessage() { CreatedChildren = Context.GetChildren().Count() });
                     break;
             }
         }

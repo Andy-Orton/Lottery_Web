@@ -26,8 +26,15 @@ namespace Lottery.Actors
                     Log.Info("User Generator Actor has been created");
 
 
-                    Context.Child("PeriodActor").Tell(new SupervisorPeriodMessage() { NumberOfVendors = sup.NumberOfVendors });
                     Context.Child("UserGenerator").Tell(new SupervisorUserGeneratorMessage() { NumberOfTickets = sup.NumberOfTickets, NumberOfUsers = sup.NumberOfUsers });
+                    Context.Child("PeriodActor").Tell(new SupervisorPeriodMessage() { NumberOfVendors = sup.NumberOfVendors });
+                    break;
+                case UserGenerationCompleteMessage msg:
+                    Log.Info($"{msg.CreatedChildren} children created from User Generator");
+                    Context.ActorSelection("UserGenerator/*").Tell(new LotterySalesOpen());
+                    break;
+                case VendorGenerationCompleteMessage msg:
+                    Log.Info($"{msg.CreatedVendors} vendors created from Period");
                     break;
                 default:
                     Log.Info("Got Message that I didn't know how to do anything with");
