@@ -18,7 +18,9 @@ namespace Lottery.ConsoleRunner
 
 
             lotterySupervisor.Tell(new BeginPeriodMessage() {NumberOfTickets=300, NumberOfUsers=200, NumberOfVendors=20});
+            Console.WriteLine("Ticket sales have begun, press enter to end period");
             Console.ReadLine();
+            lotterySupervisor.Tell(new SupervisorSalesClosedMessage() { });
             LotteryActorSystem.Terminate();
         }
     }

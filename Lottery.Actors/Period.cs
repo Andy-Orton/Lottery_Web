@@ -36,7 +36,7 @@ namespace Lottery.Actors
 
             Receive<TicketBoughtMessage>(msg =>
             {
-                Sender.Tell(new BadTicketRequest() { });
+                Sender.Tell(new BadTicketRequest() {Message = "Ticket sales have not yet begun"});
             });
         }
 
@@ -45,7 +45,7 @@ namespace Lottery.Actors
             Log.Info("Becoming Open");
             Receive<TicketBoughtMessage>(msg =>
             {
-                Context.Child("VendorRoundRobin").Tell(msg);
+                Context.Child("VendorRoundRobin").Forward(msg);
             });
 
             Receive<SupervisorSalesClosedMessage>(msg =>
@@ -58,6 +58,10 @@ namespace Lottery.Actors
         private void SalesClosed()
         {
             Log.Info("Becoming Closed");
+            Receive<TicketBoughtMessage>(msg =>
+            {
+                Sender.Tell(new BadTicketRequest { Message = "Ticket sales have ended" });
+            });
         }
     }
 }

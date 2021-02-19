@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lottery.Actors.Messages
 {
-    public record BadTicketRequest
+    public record BuyTicketMessage
     {
-        public string Message { get; internal set; }
     }
 }
