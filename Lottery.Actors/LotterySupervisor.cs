@@ -10,6 +10,7 @@ namespace Lottery.Actors
     public class LotterySupervisor : UntypedActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
+        public bool ReadyToMoveToNextPhase { get; set; }
 
         protected override void PreStart() => Log.Info("Lottery Application started");
         protected override void PostStop() => Log.Info("Lottery Application stopped");
@@ -31,17 +32,32 @@ namespace Lottery.Actors
                     break;
                 case UserGenerationCompleteMessage msg:
                     Log.Info($"{msg.CreatedChildren} children created from User Generator");
-                    Context.ActorSelection("UserGenerator/*").Tell(new LotterySalesOpen());
+                    CheckForNextPeriodPhase();
                     break;
                 case VendorGenerationCompleteMessage msg:
                     Log.Info($"{msg.CreatedVendors} vendors created from Period");
+                    CheckForNextPeriodPhase();
+                    break;
+                case UserGeneratorUsersCompleteMessage msg:
+                    Log.Info("Users finished selling tickets");
+                    Context.Child("PeriodActor").Tell(new SupervisorSalesClosedMessage() { });
                     break;
                 default:
-                    Log.Info("Got Message that I didn't know how to do anything with");
                     break;
             }
-            
         }
-       
+
+        private void CheckForNextPeriodPhase()
+        {
+            if (ReadyToMoveToNextPhase)
+            {
+                Context.Child("PeriodActor").Tell(new SupervisorSalesOpenMessage { });
+                Context.ActorSelection("UserGenerator/*").Tell(new LotterySalesOpen());
+            }
+            else
+            {
+                ReadyToMoveToNextPhase = true;
+            }
+        }
     }
 }

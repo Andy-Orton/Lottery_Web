@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Lottery.Actors
 {
-    public class UserActor : UntypedActor
+    public class UserActor : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
         public int NumTickets { get; }
@@ -17,16 +17,16 @@ namespace Lottery.Actors
         public UserActor(int numTickets)
         {
             NumTickets = numTickets;
-            Log.Info("New User");
-        }
-        protected override void OnReceive(object message)
-        {
-            switch (message)
+            Receive<LotterySalesOpen>(msg =>
             {
-                case LotterySalesOpen msg:
-                    Log.Info("Sales Open");
-                    break;
-            }
+                int[] selectedBalls = { 1, 2, 3, 4, 5, 6 };
+                Context.ActorSelection("akka://LotteryActorSystem/user/LotterySupervisor/PeriodActor").Tell(new TicketBoughtMessage {name = Self.Path.Name, balls = selectedBalls });
+            });
+
+            Receive<BadTicketRequest>(msg =>
+            {
+                Log.Error("Bad Actor");
+            });
         }
     }
 }

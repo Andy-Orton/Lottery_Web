@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.Event;
+using Lottery.Actors.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,18 @@ using System.Threading.Tasks;
 
 namespace Lottery.Actors
 {
-    public class Vendor : UntypedActor
+    public class Vendor : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
-        protected override void OnReceive(object message)
+        public Vendor()
         {
-            throw new NotImplementedException();
+            Log.Info("Created Vendor");
+            Receive<TicketBoughtMessage>(msg =>
+            {
+                Log.Info($"{msg.name} user bought a ticket");
+
+            });
         }
     }
 }

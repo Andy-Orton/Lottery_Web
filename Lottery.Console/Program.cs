@@ -19,6 +19,7 @@ namespace Lottery.ConsoleRunner
 
             lotterySupervisor.Tell(new BeginPeriodMessage() {NumberOfTickets=300, NumberOfUsers=200, NumberOfVendors=20});
             Console.ReadLine();
+            LotteryActorSystem.Terminate();
         }
     }
 }
