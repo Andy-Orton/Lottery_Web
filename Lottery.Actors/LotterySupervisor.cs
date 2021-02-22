@@ -31,7 +31,7 @@ namespace Lottery.Actors
                 Log.Info("User Generator Actor has been created");
 
 
-                Context.Child(ActorTypes.UserGenerator).Tell(new SupervisorUserGeneratorMessage() { NumberOfTickets = msg.NumberOfTickets, NumberOfUsers = msg.NumberOfUsers });
+                Context.Child(ActorTypes.UserGenerator).Tell(new SupervisorUserGeneratorMessage() { MinTickets = msg.MinTickets, MaxTickets = msg.MaxTickets, NumberOfUsers = msg.NumberOfUsers });
                 Context.Child(ActorTypes.PeriodActor).Tell(new SupervisorPeriodMessage() { NumberOfVendors = msg.NumberOfVendors });
                 Become(PeriodOpen);
             });

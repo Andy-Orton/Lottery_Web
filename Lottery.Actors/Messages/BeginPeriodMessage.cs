@@ -9,7 +9,8 @@ namespace Lottery.Actors.Messages
     public record BeginPeriodMessage
     {
         public int NumberOfUsers { get; init; }
-        public int NumberOfTickets { get; init; }
+        public int MinTickets { get; init; }
+        public int MaxTickets { get; init; }
         public int NumberOfVendors { get; init; }
     }
 }

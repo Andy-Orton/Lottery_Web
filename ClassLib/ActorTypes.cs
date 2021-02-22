@@ -14,5 +14,6 @@ namespace ClassLib
         public const string AllUsers = UserGenerator + "/*";
         public const string VendorRoundRobin = "VendorRoundRobin";
         public const string TicketListActor = "TicketListActor";
+        public const string PeriodActorReference = "/user/LotterySupervisor/PeriodActor";
     }
 }

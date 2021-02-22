@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Lottery.Actors
@@ -24,7 +25,11 @@ namespace Lottery.Actors
 
             Receive<LotterySalesOpen>(msg =>
             {
-                Context.ActorSelection("akka://LotteryActorSystem/user/LotterySupervisor/PeriodActor").Tell(new BuyTicketMessage { lotteryTicket = new LotteryTicket(Self.Path.Name) });
+                Log.Info($"{Self.Path.Name} Woke up");
+                //Parallel.ForEach(Enumerable.Range(0, numTickets), (_) =>
+                //{
+                Self.Tell(new BuyNTicketMessage (NumTickets));
+                //});
             });
 
             Receive<BadTicketRequest>(msg =>
@@ -35,20 +40,23 @@ namespace Lottery.Actors
             Receive<TicketReceiptMessage>(msg =>
             {
                 Log.Info($"{Self.Path.Name} confirming ticket receipt received");
-                //BuyTicket();
             });
 
 
+            Receive<BuyNTicketMessage>(msg => {
+                if(msg.numTicketsLeftToBuy <= 0)
+                {
+                    return;
+                }
+                Context.ActorSelection(ActorTypes.PeriodActorReference).Tell(new BuyTicketMessage { lotteryTicket = new LotteryTicket(Self.Path.Name) });
+                Self.Tell(new BuyNTicketMessage(msg.numTicketsLeftToBuy-1));
+            });
+
 
         }
 
-        private void BuyTicket()
-        {
-            if(BoughtTickets <= NumTickets)
-            {
-                Context.ActorSelection("akka://LotteryActorSystem/user/LotterySupervisor/PeriodActor").Tell(new BuyTicketMessage { lotteryTicket = new LotteryTicket(Self.Path.Name) });
-                BoughtTickets++;
-            }
-        }
+
     }
+
+    public record BuyNTicketMessage (int numTicketsLeftToBuy);
 }

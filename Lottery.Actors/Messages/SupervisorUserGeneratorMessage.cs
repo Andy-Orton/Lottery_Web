@@ -9,6 +9,7 @@ namespace Lottery.Actors.Messages
     public record SupervisorUserGeneratorMessage
     {
         public int NumberOfUsers { get; init; }
-        public int NumberOfTickets { get; init; }
+        public int MinTickets { get; init; }
+        public int MaxTickets { get; init; }
     }
 }
