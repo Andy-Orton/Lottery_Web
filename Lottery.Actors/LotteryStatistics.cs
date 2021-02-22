@@ -1,5 +1,7 @@
 ﻿using Akka.Actor;
 using Akka.Event;
+using ClassLib;
+using Lottery.Actors.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +10,19 @@ using System.Threading.Tasks;
 
 namespace Lottery.Actors
 {
-    public class LotteryStatistics : UntypedActor
+    public class LotteryStatistics : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
-        protected override void OnReceive(object message)
+        public List<LotteryTicket> Tickets { get; set; }
+
+        public LotteryStatistics()
         {
-            throw new NotImplementedException();
+            Tickets = new List<LotteryTicket>();
+            Receive<TopTenWinnersMessage>(msg =>
+            {
+                Sender.Tell(new TopTenWinnersMessage());
+            });
         }
     }
 }

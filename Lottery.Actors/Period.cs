@@ -51,7 +51,7 @@ namespace Lottery.Actors
                 Context.Child(ActorTypes.VendorRoundRobin).Forward(msg);
             });
 
-            Receive<SupervisorSalesClosedMessage>(msg =>
+            Receive<EndPeriodMessage>(msg =>
             {
                 Become(SalesClosed);
             });

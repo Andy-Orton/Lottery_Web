@@ -36,10 +36,7 @@ namespace Lottery.Actors
                 Become(PeriodOpen);
             });
 
-            Receive<PeriodCompleteMessage>(msg =>
-            {
-                var topTen = Context.Child(ActorTypes.StatsActor).Ask(new TopTenWinnersMessage());
-            });
+            
         }
 
 
@@ -59,12 +56,12 @@ namespace Lottery.Actors
             Receive<UserGeneratorUsersCompleteMessage>(msg =>
             {
                 Log.Info("Users finished buying tickets");
-                Context.Child(ActorTypes.PeriodActor).Tell(new SupervisorSalesClosedMessage() { });
+                Context.Child(ActorTypes.PeriodActor).Tell(new EndPeriodMessage() { });
             });
 
-            Receive<EndPeriodMessage>(msg =>
+            Receive<SupervisorSalesClosedMessage>(msg =>
             {
-                Context.Child(ActorTypes.PeriodActor).Tell(new SupervisorSalesClosedMessage { });
+                Context.Child(ActorTypes.PeriodActor).Tell(new EndPeriodMessage { });
                 Become(PeriodClosed);
             });
         }

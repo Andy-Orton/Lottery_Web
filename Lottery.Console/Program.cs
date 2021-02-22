@@ -21,6 +21,7 @@ namespace Lottery.ConsoleRunner
             Console.WriteLine("Ticket sales have begun, press enter to end period");
             Console.ReadLine();
             lotterySupervisor.Tell(new SupervisorSalesClosedMessage() { });
+            Console.ReadLine();
             LotteryActorSystem.Terminate();
         }
     }
