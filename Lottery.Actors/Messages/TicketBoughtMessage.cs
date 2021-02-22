@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClassLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,6 @@ namespace Lottery.Actors.Messages
 {
     public record TicketBoughtMessage
     {
-        public string name { get; init; }
-        public int[] balls { get; init; }
+        public LotteryTicket lotteryTicket { get; init; }
     }
 }

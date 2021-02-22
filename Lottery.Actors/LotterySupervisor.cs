@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.Event;
+using ClassLib;
 using Lottery.Actors.Messages;
 using System;
 using System.Collections.Generic;
@@ -24,20 +25,20 @@ namespace Lottery.Actors
         {
             Receive<BeginPeriodMessage>(msg =>
             {
-                Context.ActorOf(Props.Create(() => new Period()), "PeriodActor");
+                Context.ActorOf(Props.Create(() => new Period()), ActorTypes.PeriodActor);
                 Log.Info("Period Actor has been created");
-                Context.ActorOf(Props.Create(() => new UserGenerator()), "UserGenerator");
+                Context.ActorOf(Props.Create(() => new UserGenerator()), ActorTypes.UserGenerator);
                 Log.Info("User Generator Actor has been created");
 
 
-                Context.Child("UserGenerator").Tell(new SupervisorUserGeneratorMessage() { NumberOfTickets = msg.NumberOfTickets, NumberOfUsers = msg.NumberOfUsers });
-                Context.Child("PeriodActor").Tell(new SupervisorPeriodMessage() { NumberOfVendors = msg.NumberOfVendors });
+                Context.Child(ActorTypes.UserGenerator).Tell(new SupervisorUserGeneratorMessage() { NumberOfTickets = msg.NumberOfTickets, NumberOfUsers = msg.NumberOfUsers });
+                Context.Child(ActorTypes.PeriodActor).Tell(new SupervisorPeriodMessage() { NumberOfVendors = msg.NumberOfVendors });
                 Become(PeriodOpen);
             });
 
             Receive<PeriodCompleteMessage>(msg =>
             {
-                var topTen = Context.Child("Stats").Ask(new TopTenWinnersMessage());
+                var topTen = Context.Child(ActorTypes.StatsActor).Ask(new TopTenWinnersMessage());
             });
         }
 
@@ -58,12 +59,12 @@ namespace Lottery.Actors
             Receive<UserGeneratorUsersCompleteMessage>(msg =>
             {
                 Log.Info("Users finished buying tickets");
-                Context.Child("PeriodActor").Tell(new SupervisorSalesClosedMessage() { });
+                Context.Child(ActorTypes.PeriodActor).Tell(new SupervisorSalesClosedMessage() { });
             });
 
             Receive<EndPeriodMessage>(msg =>
             {
-                Context.Child("PeriodActor").Tell(new SupervisorSalesClosedMessage { });
+                Context.Child(ActorTypes.PeriodActor).Tell(new SupervisorSalesClosedMessage { });
                 Become(PeriodClosed);
             });
         }
@@ -72,8 +73,8 @@ namespace Lottery.Actors
         {
             if (ReadyToMoveToNextPhase)
             {
-                Context.Child("PeriodActor").Tell(new SupervisorSalesOpenMessage { });
-                Context.ActorSelection("UserGenerator/*").Tell(new LotterySalesOpen());
+                Context.Child(ActorTypes.PeriodActor).Tell(new SupervisorSalesOpenMessage { });
+                Context.ActorSelection(ActorTypes.AllUsers).Tell(new LotterySalesOpen());
             }
             else
             {

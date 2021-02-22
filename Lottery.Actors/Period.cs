@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Akka.Event;
 using Akka.Routing;
+using ClassLib;
 using Lottery.Actors.Messages;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,9 @@ namespace Lottery.Actors
             Receive<SupervisorPeriodMessage>(msg =>
             {
                 var props = new RoundRobinPool(msg.NumberOfVendors).Props(Props.Create<Vendor>());
-                Context.ActorOf(props, "VendorRoundRobin");
+                Context.ActorOf(props, ActorTypes.VendorRoundRobin);
+                var TicketListProps = Props.Create<TicketListActor>();
+                Context.ActorOf(TicketListProps, ActorTypes.TicketListActor);
                 Sender.Tell(new VendorGenerationCompleteMessage { CreatedVendors = Context.GetChildren().Count() });
             });
 
@@ -43,9 +46,9 @@ namespace Lottery.Actors
         private void SalesOpen()
         {
             Log.Info("Becoming Open");
-            Receive<TicketBoughtMessage>(msg =>
+            Receive<BuyTicketMessage>(msg =>
             {
-                Context.Child("VendorRoundRobin").Forward(msg);
+                Context.Child(ActorTypes.VendorRoundRobin).Forward(msg);
             });
 
             Receive<SupervisorSalesClosedMessage>(msg =>

@@ -99,5 +99,16 @@ namespace ClassLib
             message = null;
             return true; //all others pass!
         }
+
+        public override string ToString()
+        {
+            string a = $"User: {this.Player}, Selected Balls: ";
+            foreach(var i in this.balls)
+            {
+                a += $"{i} ";
+            }
+
+            return a;
+        }
     }//end LotteryTicket
 }

@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.Event;
+using ClassLib;
 using Lottery.Actors.Messages;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,16 @@ namespace Lottery.Actors
 
         public Vendor()
         {
-            Log.Info("Created Vendor");
+            Receive<BuyTicketMessage>(msg =>
+            {
+                Log.Info($"{msg.lotteryTicket.Player} buying a ticket");
+                Context.ActorSelection("akka://LotteryActorSystem/user/LotterySupervisor/PeriodActor/TicketListActor").Tell(msg);
+            });
+
             Receive<TicketBoughtMessage>(msg =>
             {
-                Log.Info($"{msg.name} user bought a ticket");
-
+                Log.Info($"{msg.lotteryTicket.Player}'s ticket has been bought");
+                Context.ActorSelection($"akka://LotteryActorSystem/user/LotterySupervisor/UserGenerator/{msg.lotteryTicket.Player}").Tell(new TicketReceiptMessage { });
             });
         }
     }
