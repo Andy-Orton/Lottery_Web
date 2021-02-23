@@ -15,18 +15,14 @@ namespace ClassLib
         public int winLevel; //only use if isGraded is set to true
         public decimal winAmtDollars; //only use if isGraded is set to true
         
-        //static, so new Random() is called only once for the program.
-        static Random rnd = new System.Random(System.Environment.TickCount);
-
-
-
         public LotteryTicket() : this("Player Name Anonymous")
         {
         }
+
         public LotteryTicket(String PlayerName)
         { //RULE: first 5 balls are 1-69 inclusive, no duplicates in balls 1-5
           //RULE: 6th ball is 1-26 inclusive
-          
+            var rnd = new Random();
             bool duplicate = false;
             for (int i = 0; i < 5; i++)
             {

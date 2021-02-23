@@ -15,21 +15,16 @@ namespace Lottery.Actors
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
         public int NumTickets { get; }
-        public int BoughtTickets { get; set; }
-        private Random random = new Random();
 
         public UserActor(int numTickets)
         {
-            BoughtTickets = 0;
             NumTickets = numTickets;
 
             Receive<LotterySalesOpen>(msg =>
             {
                 Log.Info($"{Self.Path.Name} Woke up");
-                //Parallel.ForEach(Enumerable.Range(0, numTickets), (_) =>
-                //{
-                Self.Tell(new BuyNTicketMessage (NumTickets));
-                //});
+
+                Self.Tell(new BuyNTicketMessage(NumTickets));
             });
 
             Receive<BadTicketRequest>(msg =>
@@ -42,20 +37,16 @@ namespace Lottery.Actors
                 Log.Info($"{Self.Path.Name} confirming ticket receipt received");
             });
 
-
-            Receive<BuyNTicketMessage>(msg => {
-                if(msg.numTicketsLeftToBuy <= 0)
+            Receive<BuyNTicketMessage>(msg =>
+            {
+                if (msg.numTicketsLeftToBuy <= 0)
                 {
                     return;
                 }
                 Context.ActorSelection(ActorTypes.PeriodActorReference).Tell(new BuyTicketMessage { lotteryTicket = new LotteryTicket(Self.Path.Name) });
-                Self.Tell(new BuyNTicketMessage(msg.numTicketsLeftToBuy-1));
+                Self.Tell(new BuyNTicketMessage(msg.numTicketsLeftToBuy - 1));
             });
-
-
         }
-
-
     }
 
     public record BuyNTicketMessage (int numTicketsLeftToBuy);

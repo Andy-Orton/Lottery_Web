@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace Lottery.Actors
 {
-    public class Period : ReceiveActor
+    public class PeriodActor : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
-        public Period()
+        public PeriodActor()
         {
             Become(Initializing);
         }
