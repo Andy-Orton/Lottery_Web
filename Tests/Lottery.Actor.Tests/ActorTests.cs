@@ -30,7 +30,7 @@ namespace Tests.Lottery.Actor.Tests
         public void SupervisorUserGeneratorTest(int users)
         {
             var ugMsg = new SupervisorUserGeneratorMessage() { NumberOfTickets = 200, NumberOfUsers = users };
-            var userGenerator = ActorOfAsTestActorRef(() => new UserGenerator(), TestActor);
+            var userGenerator = ActorOfAsTestActorRef(() => new UserActorGenerator(), TestActor);
 
             userGenerator.Tell(ugMsg);
 

@@ -25,7 +25,7 @@ namespace Lottery.Actors
             Log.Info("Initializing Phase");
             Receive<SupervisorPeriodMessage>(msg =>
             {
-                var props = new RoundRobinPool(msg.NumberOfVendors).Props(Props.Create<Vendor>());
+                var props = new RoundRobinPool(msg.NumberOfVendors).Props(Props.Create<VendorActor>());
                 Context.ActorOf(props, ActorTypes.VendorRoundRobin);
                 var TicketListProps = Props.Create<TicketListActor>();
                 Context.ActorOf(TicketListProps, ActorTypes.TicketListActor);

@@ -27,7 +27,7 @@ namespace Lottery.Actors
             {
                 Context.ActorOf(Props.Create(() => new PeriodActor()), ActorTypes.PeriodActor);
                 Log.Info("Period Actor has been created");
-                Context.ActorOf(Props.Create(() => new UserGenerator()), ActorTypes.UserGenerator);
+                Context.ActorOf(Props.Create(() => new UserActorGenerator()), ActorTypes.UserGenerator);
                 Log.Info("User Generator Actor has been created");
 
                 Context.Child(ActorTypes.UserGenerator).Tell(new SupervisorUserGeneratorMessage() { MinTickets = msg.MinTickets, MaxTickets = msg.MaxTickets, NumberOfUsers = msg.NumberOfUsers });

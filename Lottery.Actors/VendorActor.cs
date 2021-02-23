@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Lottery.Actors
 {
-    public class Vendor : ReceiveActor
+    public class VendorActor : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
-        public Vendor()
+        public VendorActor()
         {
             Receive<BuyTicketMessage>(msg =>
             {

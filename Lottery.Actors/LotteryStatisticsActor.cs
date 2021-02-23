@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Lottery.Actors
 {
-    public class LotteryStatistics : ReceiveActor
+    public class LotteryStatisticsActor : ReceiveActor
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
         public List<LotteryTicket> Tickets { get; set; }
 
-        public LotteryStatistics()
+        public LotteryStatisticsActor()
         {
             Tickets = new List<LotteryTicket>();
             Receive<TopTenWinnersMessage>(msg =>
