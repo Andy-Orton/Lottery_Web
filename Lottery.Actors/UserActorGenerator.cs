@@ -13,7 +13,8 @@ namespace Lottery.Actors
     public class UserActorGenerator : ReceiveActor
     {
         private Random random = new Random();
-        public ILoggingAdapter Log { get; } = Context.GetLogger();
+        private ILoggingAdapter log { get; } = Context.GetLogger();
+        private List<IActorRef> users = new ();
 
         public UserActorGenerator()
         {
@@ -21,10 +22,21 @@ namespace Lottery.Actors
             {
                 for (int i = 0; i < msg.NumberOfUsers; i++)
                 {
-                    Context.ActorOf(Props.Create(() => new UserActor(random.Next(msg.MinTickets, msg.MaxTickets))), "User" + i);
+                    var user = Context.ActorOf(Props.Create(() => new UserActor(random.Next(msg.MinTickets, msg.MaxTickets))), "User" + i);
+                    users.Add(user);
                 }
                 Sender.Tell(new UserGenerationCompleteMessage() { CreatedChildren = Context.GetChildren().Count() });
             });
+
+            Receive<DoneBuyingTicketsMessage>(msg =>
+            {
+                users.Remove(Sender);
+                if(users.Count == 0)
+                {
+                    Context.Parent.Tell(new AllUserTicketPurchasesCompleteMessage());
+                }
+            });
         }
     }
+    public record AllUserTicketPurchasesCompleteMessage;
 }

@@ -23,12 +23,11 @@ namespace Lottery.Actors
         private void Initializing()
         {
             Log.Info("Initializing Phase");
-            Receive<SupervisorPeriodMessage>(msg =>
+            Receive<InitializeNewPeriodMessage>(msg =>
             {
-                var props = new RoundRobinPool(msg.NumberOfVendors).Props(Props.Create<VendorActor>());
-                Context.ActorOf(props, ActorTypes.VendorRoundRobin);
-                var TicketListProps = Props.Create<TicketListActor>();
-                Context.ActorOf(TicketListProps, ActorTypes.TicketListActor);
+                Context.ActorOf(new RoundRobinPool(msg.NumberOfVendors).Props(Props.Create<VendorActor>()), ActorTypes.VendorRoundRobin);
+                Context.ActorOf(Props.Create<TicketListActor>(), ActorTypes.TicketListActor);
+                Context.ActorOf(Props.Create<LotteryStatisticsActor>(), ActorTypes.StatsActor);
                 Sender.Tell(new VendorGenerationCompleteMessage { CreatedVendors = Context.GetChildren().Count() });
             });
 
@@ -54,6 +53,7 @@ namespace Lottery.Actors
             Receive<EndPeriodMessage>(msg =>
             {
                 Become(SalesClosed);
+                Context.Child(ActorTypes.StatsActor).Tell(new GenerateStatisticsMessage());
             });
 
         }
@@ -65,6 +65,12 @@ namespace Lottery.Actors
             {
                 Sender.Tell(new BadTicketRequest { Message = "Ticket sales have ended" });
             });
+
+            Receive<GenerateStatisticsMessage>(msg =>
+            {
+
+            });
         }
     }
+    public record GenerateStatisticsMessage;
 }

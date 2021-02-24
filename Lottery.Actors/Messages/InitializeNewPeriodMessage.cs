@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lottery.Actors.Messages
 {
-    public record SupervisorPeriodMessage
+    public record InitializeNewPeriodMessage
     {
         public int NumberOfVendors { get; init; }
     }

@@ -12,6 +12,8 @@ namespace Lottery.Actors
 {
     public class LotteryStatisticsActor : ReceiveActor
     {
+        private LotteryTicket WinningTicket;
+
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
         public List<LotteryTicket> Tickets { get; set; }
@@ -22,6 +24,11 @@ namespace Lottery.Actors
             Receive<TopTenWinnersMessage>(msg =>
             {
                 Sender.Tell(new TopTenWinnersMessage());
+            });
+
+            Receive<GenerateStatisticsMessage>(msg =>
+            {
+                WinningTicket = new LotteryTicket("WinningTicket");
             });
         }
     }

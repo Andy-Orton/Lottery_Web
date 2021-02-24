@@ -31,7 +31,7 @@ namespace Lottery.Actors
                 Log.Info("User Generator Actor has been created");
 
                 Context.Child(ActorTypes.UserGenerator).Tell(new SupervisorUserGeneratorMessage() { MinTickets = msg.MinTickets, MaxTickets = msg.MaxTickets, NumberOfUsers = msg.NumberOfUsers });
-                Context.Child(ActorTypes.PeriodActor).Tell(new SupervisorPeriodMessage() { NumberOfVendors = msg.NumberOfVendors });
+                Context.Child(ActorTypes.PeriodActor).Tell(new InitializeNewPeriodMessage() { NumberOfVendors = msg.NumberOfVendors });
                 Become(PeriodOpen);
             });            
         }
@@ -55,11 +55,21 @@ namespace Lottery.Actors
                 Context.Child(ActorTypes.PeriodActor).Tell(new EndPeriodMessage() { });
             });
 
-            Receive<SupervisorSalesClosedMessage>(msg =>
+            Receive((Action<SupervisorSalesClosedMessage>)(msg =>
             {
-                Context.Child(ActorTypes.PeriodActor).Tell(new EndPeriodMessage { });
-                Become(PeriodClosed);
+                EndPeriod();
+            }));
+
+            Receive<AllUserTicketPurchasesCompleteMessage>(msg =>
+            {
+                EndPeriod();
             });
+        }
+
+        private void EndPeriod()
+        {
+            Context.Child(ActorTypes.PeriodActor).Tell(new EndPeriodMessage { });
+            Become(PeriodClosed);
         }
 
         private void CheckForNextPeriodPhase()

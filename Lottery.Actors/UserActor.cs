@@ -20,12 +20,12 @@ namespace Lottery.Actors
         {
             NumTickets = numTickets;
 
-            Receive<LotterySalesOpen>(msg =>
+            Receive((Action<LotterySalesOpen>)(msg =>
             {
                 Log.Info($"{Self.Path.Name} Woke up");
 
                 Self.Tell(new BuyNTicketMessage(NumTickets));
-            });
+            }));
 
             Receive<BadTicketRequest>(msg =>
             {
@@ -41,6 +41,7 @@ namespace Lottery.Actors
             {
                 if (msg.numTicketsLeftToBuy <= 0)
                 {
+                    Context.Parent.Tell(new DoneBuyingTicketsMessage());
                     return;
                 }
                 Context.ActorSelection(ActorTypes.PeriodActorReference).Tell(new BuyTicketMessage { lotteryTicket = new LotteryTicket(Self.Path.Name) });
@@ -50,4 +51,5 @@ namespace Lottery.Actors
     }
 
     public record BuyNTicketMessage (int numTicketsLeftToBuy);
+    public record DoneBuyingTicketsMessage;
 }
