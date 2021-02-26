@@ -65,6 +65,6 @@ namespace Lottery.Actors
         }
 
     }
-    public record TicketListMessage(List<LotteryTicket> lotteryTickets, LotteryTicket WinningLotteryTicket, decimal GrandTotalWinnings);
+    public record TicketListMessage(List<LotteryTicket> lotteryTickets, LotteryTicket WinningLotteryTicket);
     public record AllTicketsScoredMessage(List<LotteryTicket> scoredTickets);
 }
