@@ -55,10 +55,10 @@ namespace Lottery.Actors
                 Context.Child(ActorTypes.PeriodActor).Tell(new EndPeriodMessage() { });
             });
 
-            Receive((Action<SupervisorSalesClosedMessage>)(msg =>
+            Receive<SupervisorSalesClosedMessage>(msg =>
             {
                 EndPeriod();
-            }));
+            });
 
             Receive<AllUserTicketPurchasesCompleteMessage>(msg =>
             {

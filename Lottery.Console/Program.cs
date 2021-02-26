@@ -17,7 +17,7 @@ namespace Lottery.ConsoleRunner
             IActorRef lotterySupervisor = LotteryActorSystem.ActorOf(lotterySupervisorProps, "LotterySupervisor");
 
 
-            lotterySupervisor.Tell(new BeginPeriodMessage() {MinTickets=25, MaxTickets=500, NumberOfUsers=1250, NumberOfVendors=250});
+            lotterySupervisor.Tell(new BeginPeriodMessage() {MinTickets=25, MaxTickets=50, NumberOfUsers=100, NumberOfVendors=150});
             Console.WriteLine("Ticket sales have begun, press enter to end period");
             Console.ReadLine();
             lotterySupervisor.Tell(new SupervisorSalesClosedMessage() { });

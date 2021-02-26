@@ -14,17 +14,57 @@ namespace Lottery.Actors
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
 
-        private List<LotteryTicket> tickets = new ();
+        private List<LotteryTicket> unscoredTickets = new ();
+        private List<LotteryTicket> scoredTickets = new();
+        private List<IActorRef> scorers = new ();
         public TicketListActor()
         {
             Receive<BuyTicketMessage>(msg =>
             {
                 Log.Info($"Ticket added to list: {msg.lotteryTicket.ToString()}");
-                tickets.Add(msg.lotteryTicket);
+                unscoredTickets.Add(msg.lotteryTicket);
                 Sender.Tell(new TicketBoughtMessage { lotteryTicket = msg.lotteryTicket });
+            });
+
+            Receive<ScoreTicketsMessage>(msg =>
+            {
+                var splitSize = 500;
+                var splitTicketLists = splitList(unscoredTickets, splitSize);
+                foreach(var list in splitTicketLists)
+                {
+                    var scorer = Context.ActorOf(Props.Create<TicketScorerActor>());
+                    scorers.Add(scorer);
+                    scorer.Tell(new TicketListMessage(list));
+                }
+                Become(Scoring);
+            });
+
+        }
+
+        public void Scoring()
+        {
+            Receive<TicketListMessage>(msg =>
+            {
+                scorers.Remove(Sender);
+                scoredTickets.AddRange(msg.lotteryTickets);
+                if(scorers.Count == 0)
+                {
+                    Context.ActorSelection("../" + ActorTypes.StatsActor).Tell(new AllTicketsScoredMessage(scoredTickets));
+                }
             });
         }
 
+        private List<List<LotteryTicket>> splitList(List<LotteryTicket> lotteryTickets, int chunkSize)
+        {
+            var list = new List<List<LotteryTicket>>();
+            for(int i = 0; i < lotteryTickets.Count; i += chunkSize)
+            {
+                list.Add(lotteryTickets.GetRange(i, Math.Min(chunkSize, lotteryTickets.Count - i)));
+            }
+            return list;
+        }
 
     }
+    public record TicketListMessage(List<LotteryTicket> lotteryTickets);
+    public record AllTicketsScoredMessage(List<LotteryTicket> scoredTickets);
 }
