@@ -34,7 +34,8 @@ namespace Lottery.Actors
 
             Receive<AllTicketsScoredMessage>(msg =>
             {
-                //cool cool cool
+                var maxWinners = msg.scoredTickets.Max(lt => lt.winAmtDollars);
+                var maxTicket = msg.scoredTickets.FirstOrDefault(lt => lt.winAmtDollars == maxWinners);
             });
         }
     }

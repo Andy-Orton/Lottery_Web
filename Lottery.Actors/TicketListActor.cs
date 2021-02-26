@@ -34,7 +34,7 @@ namespace Lottery.Actors
                 {
                     var scorer = Context.ActorOf(Props.Create<TicketScorerActor>());
                     scorers.Add(scorer);
-                    scorer.Tell(new TicketListMessage(list));
+                    scorer.Tell(new TicketListMessage(list, msg.WinningLotteryTicket));
                 }
                 Become(Scoring);
             });
@@ -65,6 +65,6 @@ namespace Lottery.Actors
         }
 
     }
-    public record TicketListMessage(List<LotteryTicket> lotteryTickets);
+    public record TicketListMessage(List<LotteryTicket> lotteryTickets, LotteryTicket WinningLotteryTicket, decimal GrandTotalWinnings);
     public record AllTicketsScoredMessage(List<LotteryTicket> scoredTickets);
 }
