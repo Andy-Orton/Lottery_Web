@@ -28,7 +28,8 @@ namespace Lottery.Actors
 
             Receive<ScoreTicketsMessage>(msg =>
             {
-                var splitSize = 500;
+                //How to scale appropiately if running in the cluster
+                var splitSize = unscoredTickets.Count / Environment.ProcessorCount;
                 var splitTicketLists = splitList(unscoredTickets, splitSize);
                 foreach(var list in splitTicketLists)
                 {

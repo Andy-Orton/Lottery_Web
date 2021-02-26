@@ -66,10 +66,11 @@ namespace Lottery.Actors
                 Sender.Tell(new BadTicketRequest { Message = "Ticket sales have ended" });
             });
 
-            Receive<GenerateStatisticsMessage>(msg =>
+            Receive<AllTicketsScoredMessage>(msg =>
             {
-
+                Context.Parent.Forward(msg);
             });
+
         }
     }
     public record GenerateStatisticsMessage;

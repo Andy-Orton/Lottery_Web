@@ -4,6 +4,7 @@ using ClassLib;
 using Lottery.Actors.Messages;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Lottery.Actors
@@ -12,6 +13,7 @@ namespace Lottery.Actors
     {
         public ILoggingAdapter Log { get; } = Context.GetLogger();
         public bool ReadyToMoveToNextPhase { get; set; }
+        private Stopwatch stopwatch = new Stopwatch();
 
         protected override void PreStart() => Log.Info("Lottery Application started");
         protected override void PostStop() => Log.Info("Lottery Application stopped");
@@ -25,6 +27,7 @@ namespace Lottery.Actors
         {
             Receive<BeginPeriodMessage>(msg =>
             {
+                stopwatch.Start();
                 Context.ActorOf(Props.Create(() => new PeriodActor()), ActorTypes.PeriodActor);
                 Log.Info("Period Actor has been created");
                 Context.ActorOf(Props.Create(() => new UserActorGenerator()), ActorTypes.UserGenerator);
@@ -33,7 +36,14 @@ namespace Lottery.Actors
                 Context.Child(ActorTypes.UserGenerator).Tell(new SupervisorUserGeneratorMessage() { MinTickets = msg.MinTickets, MaxTickets = msg.MaxTickets, NumberOfUsers = msg.NumberOfUsers });
                 Context.Child(ActorTypes.PeriodActor).Tell(new InitializeNewPeriodMessage() { NumberOfVendors = msg.NumberOfVendors });
                 Become(PeriodOpen);
-            });            
+            });
+
+            Receive<AllTicketsScoredMessage>(msg =>
+            {
+                stopwatch.Stop();
+
+                Console.WriteLine(stopwatch.Elapsed);
+            });
         }
 
         private void PeriodOpen()
