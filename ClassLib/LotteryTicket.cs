@@ -14,7 +14,8 @@ namespace ClassLib
         public bool isGraded = false;
         public int winLevel; //only use if isGraded is set to true
         public decimal winAmtDollars; //only use if isGraded is set to true
-        
+        [ThreadStatic]
+        private static Random rnd = new Random();
         public LotteryTicket() : this("Player Name Anonymous")
         {
         }
@@ -22,7 +23,10 @@ namespace ClassLib
         public LotteryTicket(String PlayerName)
         { //RULE: first 5 balls are 1-69 inclusive, no duplicates in balls 1-5
           //RULE: 6th ball is 1-26 inclusive
-            var rnd = new Random();
+            if (rnd == null)
+            {
+                rnd = new Random();
+            }
             bool duplicate = false;
             for (int i = 0; i < 5; i++)
             {
