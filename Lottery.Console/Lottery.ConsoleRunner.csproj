@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Akka.Logger.Serilog" Version="1.4.11" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Lottery.Actors\Lottery.Actors.csproj" />
   </ItemGroup>
 

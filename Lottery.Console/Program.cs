@@ -3,6 +3,7 @@ using Akka.Actor.Setup;
 using Akka.Configuration;
 using Lottery.Actors;
 using Lottery.Actors.Messages;
+using Serilog;
 using System;
 
 namespace Lottery.ConsoleRunner
@@ -14,6 +15,12 @@ namespace Lottery.ConsoleRunner
 
         static void Main(string[] args)
         {
+            var logger = new LoggerConfiguration()
+                .WriteTo.File("log.txt", buffered: true, flushToDiskInterval: TimeSpan.FromSeconds(2))
+                .MinimumLevel.Information()
+                .CreateLogger();
+
+            Serilog.Log.Logger = logger;
             LotteryActorSystem = ActorSystem.Create("LotteryActorSystem", ActorSystemSettings);
             Props lotterySupervisorProps = Props.Create<LotterySupervisor>();
             IActorRef lotterySupervisor = LotteryActorSystem.ActorOf(lotterySupervisorProps, "LotterySupervisor");
@@ -25,12 +32,16 @@ namespace Lottery.ConsoleRunner
 
             Console.ReadLine();
             LotteryActorSystem.Terminate();
+
+            //Akka.Logger.Serilog.SerilogLogger
         }
+
+
 
         public static readonly BootstrapSetup Bootstrap = BootstrapSetup.Create().WithConfig(
             ConfigurationFactory.ParseString(@"
                 akka{
-                    loggers = []
+                    loggers = [""Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog""]
                     actor{
                         serialize-messages = off
                     }
