@@ -14,9 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Design Document.txt = Design Document.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lottery.Actors", "Lottery.Actors\Lottery.Actors.csproj", "{D16CD101-E403-4563-AA47-B064B832CFB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lottery.Actors", "Lottery.Actors\Lottery.Actors.csproj", "{D16CD101-E403-4563-AA47-B064B832CFB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lottery.ConsoleRunner", "Lottery.Console\Lottery.ConsoleRunner.csproj", "{0EFBF24D-A033-40D0-A509-CA1B4B9D1865}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lottery.ConsoleRunner", "Lottery.Console\Lottery.ConsoleRunner.csproj", "{0EFBF24D-A033-40D0-A509-CA1B4B9D1865}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +90,18 @@ Global
 		{0EFBF24D-A033-40D0-A509-CA1B4B9D1865}.Release|x64.Build.0 = Release|Any CPU
 		{0EFBF24D-A033-40D0-A509-CA1B4B9D1865}.Release|x86.ActiveCfg = Release|Any CPU
 		{0EFBF24D-A033-40D0-A509-CA1B4B9D1865}.Release|x86.Build.0 = Release|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Debug|x64.Build.0 = Debug|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Debug|x86.Build.0 = Debug|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Release|x64.ActiveCfg = Release|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Release|x64.Build.0 = Release|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Release|x86.ActiveCfg = Release|Any CPU
+		{67CA68EF-F9A3-49EE-BB08-46BBF36860D3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

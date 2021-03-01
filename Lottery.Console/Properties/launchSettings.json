@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Lottery.ConsoleRunner": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  lottery.consolerunner:
+    image: ${DOCKER_REGISTRY-}lotteryconsolerunner
+    build:
+      context: .
+      dockerfile: Lottery.Console/Dockerfile
+    volumes:
+    - log-volume:/logs
+    environment: 
+    - CONNECTION_STRING=User ID=postgres; Password=mysecretpassword; Host=db;
+
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword  #TODO: - move to secrets file
+      - PGDATA=/var/lib/postgresql/data
+    volumes:
+      - log-volume:/logs 
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    
+volumes:
+  log-volume:
+  pg-data:
