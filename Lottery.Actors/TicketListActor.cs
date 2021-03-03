@@ -38,19 +38,19 @@ namespace Lottery.Actors
                 unscoredTickets.Add(msg.lotteryTicket);
             });
 
-            //Receive<ScoreTicketsMessage>(msg =>
-            //{
-            //    //How to scale appropiately if running in the cluster
-            //    var splitSize = unscoredTickets.Count / Environment.ProcessorCount;
-            //    var splitTicketLists = splitList(unscoredTickets, splitSize);
-            //    foreach(var list in splitTicketLists)
-            //    {
-            //        var scorer = Context.ActorOf(Props.Create<TicketScorerActor>());
-            //        scorers.Add(scorer);
-            //        scorer.Tell(new TicketListMessage(list, msg.WinningLotteryTicket));
-            //    }
-            //    Become(Scoring);
-            //});
+            Command<ScoreTicketsMessage>(msg =>
+            {
+                //How to scale appropiately if running in the cluster
+                var splitSize = unscoredTickets.Count / Environment.ProcessorCount;
+                var splitTicketLists = splitList(unscoredTickets, splitSize);
+                foreach (var list in splitTicketLists)
+                {
+                    var scorer = Context.ActorOf(Props.Create<TicketScorerActor>());
+                    scorers.Add(scorer);
+                    scorer.Tell(new TicketListMessage(list, msg.WinningLotteryTicket));
+                }
+                Become(Scoring);
+            });
 
         }
 

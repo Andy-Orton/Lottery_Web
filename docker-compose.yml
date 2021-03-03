@@ -9,7 +9,7 @@ services:
     volumes:
     - log-volume:/logs
     environment: 
-    - CONNECTION_STRING=User ID=postgres; Password=mysecretpassword; Host=db;
+    - CONNECTION_STRING=User ID=postgres; Password=mysecretpassword; Host=db; Database=postgres;
 
   db:
     image: postgres

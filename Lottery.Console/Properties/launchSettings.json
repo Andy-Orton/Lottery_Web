@@ -1,7 +1,10 @@
 {
   "profiles": {
     "Lottery.ConsoleRunner": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "environmentVariables": {
+        "CONNECTION_STRING": "Host=localhost; user id=postgres; password=postgres;"
+      }
     },
     "Docker": {
       "commandName": "Docker"
