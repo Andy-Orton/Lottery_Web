@@ -37,13 +37,22 @@ namespace Lottery.ConsoleRunner
         }
 
 
-
+        //https://github.com/akkadotnet/Akka.Persistence.PostgreSql
         public static readonly BootstrapSetup Bootstrap = BootstrapSetup.Create().WithConfig(
             ConfigurationFactory.ParseString(@"
                 akka{
                     loggers = [""Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog""]
                     actor{
                         serialize-messages = off
+                    }
+                    akka.persistence{
+                        journal{
+                            plugin = ""akka.persistence.journal.postgresql""
+                            postgresql{
+                                class = ""Akka.Persistence.Postgresql.Journal.PostgreSqlJournal, Akka.Persistence.PostgreSql""
+                                connection-string = """"
+                            }    
+                        }
                     }
                 }
             "));
