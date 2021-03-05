@@ -6,6 +6,7 @@ using Lottery.Actors.Messages;
 using Npgsql;
 using Serilog;
 using System;
+using System.Linq;
 
 namespace Lottery.ConsoleRunner
 {
@@ -16,6 +17,16 @@ namespace Lottery.ConsoleRunner
                     loggers = [""Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog""]
                     actor{
                         serialize-messages = off
+                    }
+                    actor.provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""
+                    remote {
+                        dot-netty.tcp {
+                            port = {{port}}
+                            hostname = {{hostname}}
+                        }
+                    }
+                    cluster {
+                        seed-nodes = [""akka.tcp://ClusterSystem@localhost:8081""]
                     }
                     akka.persistence{
                         journal{
@@ -59,7 +70,12 @@ namespace Lottery.ConsoleRunner
             TestDatabase();
 
             Serilog.Log.Logger = logger;
-            var config = hocon.Replace("{{connection_string}}", Environment.GetEnvironmentVariable("CONNECTION_STRING"));
+            var port = args.Length == 1 ? args[0] : "0";
+            
+            var config = hocon
+                .Replace("{{connection_string}}", Environment.GetEnvironmentVariable("CONNECTION_STRING"))
+                .Replace("{{port}}", port)
+                .Replace("{{hostname}}", Environment.MachineName);
             var ConfigBootstrap = BootstrapSetup.Create().WithConfig(config);
             var ActorSystemSettings = ActorSystemSetup.Create(ConfigBootstrap);
             LotteryActorSystem = ActorSystem.Create("LotteryActorSystem", ActorSystemSettings);
