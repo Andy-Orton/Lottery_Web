@@ -19,13 +19,13 @@ namespace Lottery.Actors
             Receive<BuyTicketMessage>(msg =>
             {
                 Log.Info($"{msg.lotteryTicket.Player} buying a ticket");
-                Context.ActorSelection("akka://LotteryActorSystem/user/LotterySupervisor/PeriodActor/TicketListActor").Tell(msg);
+                Context.ActorSelection($"/user/LotterySupervisor/PeriodActor/TicketListActor").Tell(msg);
             });
 
             Receive<TicketBoughtMessage>(msg =>
             {
                 Log.Info($"{msg.lotteryTicket.Player}'s ticket has been bought");
-                Context.ActorSelection($"akka://LotteryActorSystem/user/LotterySupervisor/UserGenerator/{msg.lotteryTicket.Player}").Tell(new TicketReceiptMessage { });
+                Context.ActorSelection($"/user/LotterySupervisor/UserGenerator/{msg.lotteryTicket.Player}").Tell(new TicketReceiptMessage { });
             });
         }
     }

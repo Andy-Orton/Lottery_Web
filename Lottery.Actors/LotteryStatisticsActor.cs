@@ -29,7 +29,7 @@ namespace Lottery.Actors
             Receive<GenerateStatisticsMessage>(msg =>
             {
                 WinningTicket = new LotteryTicket("WinningTicket");
-                Context.ActorSelection("../" + ActorTypes.TicketListActor).Tell(new ScoreTicketsMessage(WinningTicket));
+                Context.ActorSelection("../" + Constants.TicketListActor).Tell(new ScoreTicketsMessage(WinningTicket));
             });
 
             Receive<AllTicketsScoredMessage>(msg =>

@@ -2,6 +2,7 @@
 using Akka.Actor.Setup;
 using Akka.Configuration;
 using Akka.Routing;
+using ClassLib;
 using Lottery.Actors;
 using Lottery.Actors.Messages;
 using Npgsql;
@@ -26,7 +27,7 @@ namespace Lottery.ConsoleRunner
                                 nr-of-instances = 20
                                 cluster {
                                     enabled = on
-                                    max-nr-of-instances-per-node = 1
+                                    max-nr-of-instances-per-node = 20
                                     use-role = lottery
                                 }
                             }
@@ -34,13 +35,14 @@ namespace Lottery.ConsoleRunner
                     }
                     actor.provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""
                     remote {
+                        log-remote-lifecycle-events = DEBUG
                         dot-netty.tcp {
                             port = {{port}}
                             hostname = {{hostname}}
                         }
                     }
                     cluster {
-                        seed-nodes = [""akka.tcp://LotteryActorSystem@localhost:4053""]
+                        seed-nodes = [""akka.tcp://webcrawler@localhost:4053""]
                         roles = [lottery]
                     }
                     akka.persistence{
@@ -90,10 +92,11 @@ namespace Lottery.ConsoleRunner
             var config = hocon
                 .Replace("{{connection_string}}", Environment.GetEnvironmentVariable("CONNECTION_STRING"))
                 .Replace("{{port}}", port)
-                .Replace("{{hostname}}", Environment.MachineName);
+                .Replace("{{hostname}}", "144.17.24.19");
             var ConfigBootstrap = BootstrapSetup.Create().WithConfig(config);
             var ActorSystemSettings = ActorSystemSetup.Create(ConfigBootstrap);
-            LotteryActorSystem = ActorSystem.Create("lotteryactorsystem", ActorSystemSettings);
+            LotteryActorSystem = ActorSystem.Create(Constants.ActorSystemName, ActorSystemSettings);
+            LotteryActorSystem.ActorOf(Props.Create(typeof(SimpleClusterListener)), "clusterListener");
             Props lotterySupervisorProps = Props.Create<LotterySupervisor>();
             IActorRef lotterySupervisor = LotteryActorSystem.ActorOf(lotterySupervisorProps, "LotterySupervisor");
 

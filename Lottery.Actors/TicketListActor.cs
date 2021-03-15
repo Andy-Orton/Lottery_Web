@@ -62,7 +62,7 @@ namespace Lottery.Actors
                 scoredTickets.AddRange(msg.lotteryTickets);
                 if(scorers.Count == 0)
                 {
-                    Context.ActorSelection("../" + ActorTypes.StatsActor).Tell(new AllTicketsScoredMessage(scoredTickets));
+                    Context.ActorSelection("../" + Constants.StatsActor).Tell(new AllTicketsScoredMessage(scoredTickets));
                 }
             });
         }

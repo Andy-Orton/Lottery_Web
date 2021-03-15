@@ -28,13 +28,13 @@ namespace Lottery.Actors
             Receive<BeginPeriodMessage>(msg =>
             {
                 stopwatch.Start();
-                Context.ActorOf(Props.Create(() => new PeriodActor()), ActorTypes.PeriodActor);
+                Context.ActorOf(Props.Create(() => new PeriodActor()), Constants.PeriodActor);
                 Log.Info("Period Actor has been created");
-                Context.ActorOf(Props.Create(() => new UserActorGenerator()), ActorTypes.UserGenerator);
+                Context.ActorOf(Props.Create(() => new UserActorGenerator()), Constants.UserGenerator);
                 Log.Info("User Generator Actor has been created");
 
-                Context.Child(ActorTypes.UserGenerator).Tell(new SupervisorUserGeneratorMessage() { MinTickets = msg.MinTickets, MaxTickets = msg.MaxTickets, NumberOfUsers = msg.NumberOfUsers });
-                Context.Child(ActorTypes.PeriodActor).Tell(new InitializeNewPeriodMessage() { NumberOfVendors = msg.NumberOfVendors });
+                Context.Child(Constants.UserGenerator).Tell(new SupervisorUserGeneratorMessage() { MinTickets = msg.MinTickets, MaxTickets = msg.MaxTickets, NumberOfUsers = msg.NumberOfUsers });
+                Context.Child(Constants.PeriodActor).Tell(new InitializeNewPeriodMessage() { NumberOfVendors = msg.NumberOfVendors });
                 Become(PeriodOpen);
             });
 
@@ -62,7 +62,7 @@ namespace Lottery.Actors
             Receive<UserGeneratorUsersCompleteMessage>(msg =>
             {
                 Log.Info("Users finished buying tickets");
-                Context.Child(ActorTypes.PeriodActor).Tell(new EndPeriodMessage() { });
+                Context.Child(Constants.PeriodActor).Tell(new EndPeriodMessage() { });
             });
 
             Receive<SupervisorSalesClosedMessage>(msg =>
@@ -78,7 +78,7 @@ namespace Lottery.Actors
 
         private void EndPeriod()
         {
-            Context.Child(ActorTypes.PeriodActor).Tell(new EndPeriodMessage { });
+            Context.Child(Constants.PeriodActor).Tell(new EndPeriodMessage { });
             Become(PeriodClosed);
         }
 
@@ -86,8 +86,8 @@ namespace Lottery.Actors
         {
             if (ReadyToMoveToNextPhase)
             {
-                Context.Child(ActorTypes.PeriodActor).Tell(new SupervisorSalesOpenMessage { });
-                Context.ActorSelection(ActorTypes.AllUsers).Tell(new LotterySalesOpen());
+                Context.Child(Constants.PeriodActor).Tell(new SupervisorSalesOpenMessage { });
+                Context.ActorSelection(Constants.AllUsers).Tell(new LotterySalesOpen());
             }
             else
             {

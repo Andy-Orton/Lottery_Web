@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassLib
 {
-    public static class ActorTypes
+    public static class Constants
     {
         public const string StatsActor = "StatsActor";
         public const string UserGenerator = "UserGenerator";
@@ -15,5 +15,8 @@ namespace ClassLib
         public const string VendorRoundRobin = "VendorRoundRobin";
         public const string TicketListActor = "TicketListActor";
         public const string PeriodActorReference = "/user/LotterySupervisor/PeriodActor";
+        public const string ActorSystemName = "webcrawler";
+        public const string ActorSystemHost = "localhost";
+        public const string ActorSystemPort = "4053";
     }
 }

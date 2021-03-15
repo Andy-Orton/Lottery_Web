@@ -25,10 +25,10 @@ namespace Lottery.Actors
             Log.Info("Initializing Phase");
             Receive<InitializeNewPeriodMessage>(msg =>
             {
-                Context.ActorOf(Props.Create<VendorActor>().WithRouter(FromConfig.Instance), ActorTypes.VendorRoundRobin);
+                Context.ActorOf(Props.Create<VendorActor>().WithRouter(FromConfig.Instance), Constants.VendorRoundRobin);
                 //Context.ActorOf(new RoundRobinPool(msg.NumberOfVendors).Props(Props.Create<VendorActor>()), ActorTypes.VendorRoundRobin);
-                Context.ActorOf(Props.Create<TicketListActor>(), ActorTypes.TicketListActor);
-                Context.ActorOf(Props.Create<LotteryStatisticsActor>(), ActorTypes.StatsActor);
+                Context.ActorOf(Props.Create<TicketListActor>(), Constants.TicketListActor);
+                Context.ActorOf(Props.Create<LotteryStatisticsActor>(), Constants.StatsActor);
                 Sender.Tell(new VendorGenerationCompleteMessage { CreatedVendors = Context.GetChildren().Count() });
             });
 
@@ -48,13 +48,13 @@ namespace Lottery.Actors
             Log.Info("Becoming Open");
             Receive<BuyTicketMessage>(msg =>
             {
-                Context.Child(ActorTypes.VendorRoundRobin).Forward(msg);
+                Context.Child(Constants.VendorRoundRobin).Forward(msg);
             });
 
             Receive<EndPeriodMessage>(msg =>
             {
                 Become(SalesClosed);
-                Context.Child(ActorTypes.StatsActor).Tell(new GenerateStatisticsMessage());
+                Context.Child(Constants.StatsActor).Tell(new GenerateStatisticsMessage());
             });
 
         }

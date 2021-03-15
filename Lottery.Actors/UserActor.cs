@@ -44,7 +44,7 @@ namespace Lottery.Actors
                     Context.Parent.Tell(new DoneBuyingTicketsMessage());
                     return;
                 }
-                Context.ActorSelection(ActorTypes.PeriodActorReference).Tell(new BuyTicketMessage { lotteryTicket = new LotteryTicket(Self.Path.Name) });
+                Context.ActorSelection(Constants.PeriodActorReference).Tell(new BuyTicketMessage { lotteryTicket = new LotteryTicket(Self.Path.Name) });
                 Self.Tell(new BuyNTicketMessage(msg.numTicketsLeftToBuy - 1));
             });
         }
