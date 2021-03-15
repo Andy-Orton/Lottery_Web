@@ -16,7 +16,6 @@ namespace Lottery.Actors
 
         public VendorActor()
         {
-            Log.Info("Hello World");
             Receive<BuyTicketMessage>(msg =>
             {
                 Log.Info($"{msg.lotteryTicket.Player} buying a ticket");
