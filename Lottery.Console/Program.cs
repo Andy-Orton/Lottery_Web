@@ -1,6 +1,7 @@
 ﻿using Akka.Actor;
 using Akka.Actor.Setup;
 using Akka.Configuration;
+using Akka.Routing;
 using Lottery.Actors;
 using Lottery.Actors.Messages;
 using Npgsql;
@@ -10,6 +11,8 @@ using System.Linq;
 
 namespace Lottery.ConsoleRunner
 {
+    //https://github.com/petabridge/lighthouse
+    //using this as a seed node
     class Program
     {
         private const string hocon = @"
@@ -17,6 +20,17 @@ namespace Lottery.ConsoleRunner
                     loggers = [""Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog""]
                     actor{
                         serialize-messages = off
+                        deployment {
+                            /LotterySupervisor/PeriodActor/VendorRoundRobin {
+                                router = round-robin-pool
+                                nr-of-instances = 20
+                                cluster {
+                                    enabled = on
+                                    max-nr-of-instances-per-node = 1
+                                    use-role = lottery
+                                }
+                            }
+                        }
                     }
                     actor.provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""
                     remote {
@@ -26,7 +40,8 @@ namespace Lottery.ConsoleRunner
                         }
                     }
                     cluster {
-                        seed-nodes = [""akka.tcp://ClusterSystem@localhost:8081""]
+                        seed-nodes = [""akka.tcp://LotteryActorSystem@localhost:4053""]
+                        roles = [lottery]
                     }
                     akka.persistence{
                         journal{
@@ -67,22 +82,22 @@ namespace Lottery.ConsoleRunner
                 .MinimumLevel.Information()
                 .CreateLogger();
 
-            TestDatabase();
+            //TestDatabase();
 
             Serilog.Log.Logger = logger;
             var port = args.Length == 1 ? args[0] : "0";
-            
+
             var config = hocon
                 .Replace("{{connection_string}}", Environment.GetEnvironmentVariable("CONNECTION_STRING"))
                 .Replace("{{port}}", port)
                 .Replace("{{hostname}}", Environment.MachineName);
             var ConfigBootstrap = BootstrapSetup.Create().WithConfig(config);
             var ActorSystemSettings = ActorSystemSetup.Create(ConfigBootstrap);
-            LotteryActorSystem = ActorSystem.Create("LotteryActorSystem", ActorSystemSettings);
+            LotteryActorSystem = ActorSystem.Create("lotteryactorsystem", ActorSystemSettings);
             Props lotterySupervisorProps = Props.Create<LotterySupervisor>();
             IActorRef lotterySupervisor = LotteryActorSystem.ActorOf(lotterySupervisorProps, "LotterySupervisor");
 
-            lotterySupervisor.Tell(new BeginPeriodMessage() {MinTickets=5, MaxTickets=10, NumberOfUsers=20, NumberOfVendors=150});
+            lotterySupervisor.Tell(new BeginPeriodMessage() { MinTickets = 5, MaxTickets = 10, NumberOfUsers = 20, NumberOfVendors = 150 });
             Console.WriteLine("Ticket sales have begun, press enter to end period");
             Console.ReadLine();
             lotterySupervisor.Tell(new SupervisorSalesClosedMessage() { });
@@ -90,7 +105,7 @@ namespace Lottery.ConsoleRunner
             Console.ReadLine();
             LotteryActorSystem.Terminate();
 
-            //Akka.Logger.Serilog.SerilogLogger
+            ////Akka.Logger.Serilog.SerilogLogger
         }
 
         private static void TestDatabase()

@@ -25,7 +25,8 @@ namespace Lottery.Actors
             Log.Info("Initializing Phase");
             Receive<InitializeNewPeriodMessage>(msg =>
             {
-                Context.ActorOf(new RoundRobinPool(msg.NumberOfVendors).Props(Props.Create<VendorActor>()), ActorTypes.VendorRoundRobin);
+                Context.ActorOf(Props.Create<VendorActor>().WithRouter(FromConfig.Instance), ActorTypes.VendorRoundRobin);
+                //Context.ActorOf(new RoundRobinPool(msg.NumberOfVendors).Props(Props.Create<VendorActor>()), ActorTypes.VendorRoundRobin);
                 Context.ActorOf(Props.Create<TicketListActor>(), ActorTypes.TicketListActor);
                 Context.ActorOf(Props.Create<LotteryStatisticsActor>(), ActorTypes.StatsActor);
                 Sender.Tell(new VendorGenerationCompleteMessage { CreatedVendors = Context.GetChildren().Count() });
