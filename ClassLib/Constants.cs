@@ -15,7 +15,7 @@ namespace ClassLib
         public const string VendorRoundRobin = "VendorRoundRobin";
         public const string TicketListActor = "TicketListActor";
         public const string PeriodActorReference = "/user/LotterySupervisor/PeriodActor";
-        public const string ActorSystemName = "webcrawler";
+        public const string ActorSystemName = "LotteryActorSystem";
         public const string ActorSystemHost = "localhost";
         public const string ActorSystemPort = "4053";
     }

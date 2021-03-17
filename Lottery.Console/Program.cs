@@ -31,6 +31,15 @@ namespace Lottery.ConsoleRunner
                                     use-role = lottery
                                 }
                             }
+                            ///LotterySupervisor/UserGenerator {
+                            //    router = 
+                            //    nr-of-instances = 30
+                            //    cluster {
+                            //        enabled = on
+                            //        max-nr-of-instances-per-node = 20
+                            //        use-role = lottery
+                            //    }
+                            //}
                         }
                     }
                     actor.provider = ""Akka.Cluster.ClusterActorRefProvider, Akka.Cluster""
@@ -42,7 +51,7 @@ namespace Lottery.ConsoleRunner
                         }
                     }
                     cluster {
-                        seed-nodes = [""akka.tcp://webcrawler@localhost:4053""]
+                        seed-nodes = [""akka.tcp://lotteryactorsystem@172.20.176.1:4053""]
                         roles = [lottery]
                     }
                     akka.persistence{
@@ -92,7 +101,7 @@ namespace Lottery.ConsoleRunner
             var config = hocon
                 .Replace("{{connection_string}}", Environment.GetEnvironmentVariable("CONNECTION_STRING"))
                 .Replace("{{port}}", port)
-                .Replace("{{hostname}}", "144.17.24.19");
+                .Replace("{{hostname}}", "172.20.176.1");
             var ConfigBootstrap = BootstrapSetup.Create().WithConfig(config);
             var ActorSystemSettings = ActorSystemSetup.Create(ConfigBootstrap);
             LotteryActorSystem = ActorSystem.Create(Constants.ActorSystemName, ActorSystemSettings);

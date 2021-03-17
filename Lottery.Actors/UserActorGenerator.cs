@@ -23,6 +23,7 @@ namespace Lottery.Actors
                 for (int i = 0; i < msg.NumberOfUsers; i++)
                 {
                     var user = Context.ActorOf(Props.Create(() => new UserActor(random.Next(msg.MinTickets, msg.MaxTickets))), "User" + i);
+                    //var user = Context.ActorOf(Props.Create(() => new UserActor(random.Next(msg.MinTickets, msg.MaxTickets))).WithRouter(FromConfig.Instance), "User" + i);
                     users.Add(user);
                 }
                 Sender.Tell(new UserGenerationCompleteMessage() { CreatedChildren = Context.GetChildren().Count() });
